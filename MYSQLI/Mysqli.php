@@ -1,7 +1,7 @@
 <?php
 
 
-/*
+/** 
 
     Style orienté objet : 
     ---------------------
@@ -88,14 +88,14 @@
 
     NB :
     ---- 
-    ** Toutes les colonnes doivent être liées après l'exécution de la fonction mysqli_stmt_execute() 
+    * Toutes les colonnes doivent être liées après l'exécution de la fonction mysqli_stmt_execute() 
     et avant l'appel à la fonction mysqli_stmt_fetch().
-    ** Une colonne peut être associée ou réassociée à tout moment, même après une lecture partielle du résultat.
+    * Une colonne peut être associée ou réassociée à tout moment, même après une lecture partielle du résultat.
      La nouvelle association prend effet au prochain appel de mysqli_stmt_fetch().
-    ** mysqli_stmt_get_result ne peut pas être utilisée conjointement avec la mysqli_stmt_store_result(). 
+    * mysqli_stmt_get_result ne peut pas être utilisée conjointement avec la mysqli_stmt_store_result(). 
     
 
-*/
+**/
 
 
 $host = "localhost";
@@ -103,7 +103,7 @@ $db = "test_1";
 $user = "root";
 $pasw = "Aa@123456";
 
-// 
+
 
     echo "<pre>";
     //error_reporting(0);
@@ -167,9 +167,6 @@ $pasw = "Aa@123456";
 
 
 
-
-
-echo "</pre>"
 
 
 
