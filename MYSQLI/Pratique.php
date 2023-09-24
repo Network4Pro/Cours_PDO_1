@@ -115,7 +115,7 @@ try {
         echo "ID : ". $row->Id ." - Nom : ".$row->Nom. " - Prenom : ".$row->Prenom. "\n";
     }
 
-    #4- Récuperer des données d'une Réquet préparée à l'aide la méthode get_result
+    #4- Récupération des résultats en utilisant l'interface mysqli_result avec ( get_result )
     $stm = $connexion->prepare("Select * from post");
     $stm->execute();
     $result = $stm->get_result();
@@ -123,7 +123,7 @@ try {
     echo " Nombre de Lignes dans jeu de resultat est : ". $stm->num_rows."\n";
     print_r($result->fetch_all());
 
-    #3- Récuperer des données d'une Réquet préparée à l'aide la méthode fetch
+    #3- Récupération des résultats en utilisant des variables liées (bind_result) et ( fetch )
     $stm->execute();
     $stm->bind_result($Id,$Nom,$Prenom);
     while($row = $stm->fetch()){
@@ -181,15 +181,17 @@ try {
 
 
     # 
-    $sql = "select * from post; select * from post where Id = ?";
+    echo "\n\n ------------- Multi Query ------------<pre> \n\n";
+    $sql = "select * from post; select * from post where Nom = 'Hamza'";
     $connexion->multi_query($sql);
     do{
         if($result = $connexion->store_result()){
-            while{
-                
+            while($row = $result->fetch_assoc() ){
+                echo "Id : ". $row["Id"] . "  Nom :". $row["Nom"] . "  Prenom :". $row["Prenom"]."\n";
             }
         }
-    }while();
+        if( $connexion->more_results() ){ echo "----------------Autres Resultat ----------------\n"; }
+    }while($connexion->next_result());
 
     echo "</pre>";
 
@@ -239,16 +241,16 @@ try {
      ! Exécuter des requêtes SQL :
     -----------------------------
 
-     mysqli::query :
-     ------------
+     ? mysqli::query :
+     -----------------
      *  Exécute une requête sur la base de données.
      *  mysqli::query(string $query) - mysqli_query(mysqli $mysql, string $query) :  ($result_mode = MYSQLI_STORE_RESULT).
      *  Elle retourne false en cas d'échec de la requête.
      *  Pour des requêtes réussies [ SELECT, SHOW, DESCRIBE ou EXPLAIN, mysqli_query() ] retournera un objet mysqli_result.
      *  Pour les autres types de requêtes réussies (comme INSERT, UPDATE, DELETE), mysqli_query() retournera true.
 
-     musqli::execute_query : 
-     -----------------------
+     ? musqli::execute_query : 
+     --------------------------
      * La méthode mysqli::execute_query() est un raccourci pour ( prepare(), bind_param(), execute() et get_result() )
      * Prépare la requête SQL, lie les paramètres et l'exécute.
      * mysqli::execute_query(string $query, ?array $params = null): mysqli_result|bool
@@ -257,6 +259,37 @@ try {
      * Renvoie false en cas d'échec. Pour les requêtes ( SELECT ) renvoie un objet mysqli_result. les autres renvoie vrai.
      * Nombre Lignes : $affected_​rows. ---  Nombre colone : $field_​count
 
+    ? Mysqli::multi_query - mysqli_multi_query : 
+    --------------------------------------------
+    * Exécute une ou plusieurs requêtes, rassemblées dans le paramètre query par des points-virgules.
+    * mysqli::multi_query(string $query): bool
+    * mysqli_multi_query() attend pour la première requête de compléter avant de retourner le contrôle à PHP.
+    * utiliser une do-while pour traiter plusieurs requêtes. 
+    * Pour traiter la prochaine requête dans la suite, utiliser mysqli_next_result(). 
+    * Pour vérifier s'il y a plus de résultats, utiliser mysqli_more_results().
+    * Pour les requêtes SELECT , mysqli_use_result() ou mysqli_store_result() peut être utilisé pour récupérer le jeu de résultat. 
+    * Pour les autres les requêtes, les mêmes fonctions utilisé pour récupérer les informations tel que le nombre de ligne affectés.
+    *  La connexion sera occupé jusqu'à ce que toutes les requêtes soit complété et que leur résultat soit récupéré par PHP.
+
+    ? mysqli_more_results() : 
+    -------------------------
+    * mysqli::more_results -- mysqli_more_results — Vérifie s'il y a d'autres jeux de résultats MySQL disponibles
+    * public mysqli::more_results(): bool
+    * Indique si un ou plusieurs jeux de résultats sont disponibles, générés par un appel antérieur à mysqli_multi_query().
+    * true si un ou plusieurs jeux de résultats (incluant les erreurs) sont disponibles à partir d'un précédent appel à la fonction mysqli_multi_query().
+    *  false sinon.
+
+    ? mysqli_next_result() : 
+    -------------------------
+    * mysqli::next_result : Prépare le prochain résultat d'une requête multiple, initialisé par un appel antérieur à mysqli_multi_query(),
+    * true en cas de succès.
+    * false si une erreur survient. false si la prochaine déclaration résulte en une erreur, pas comme mysqli_more_results().
+
+    ? mysqli_store_result() : 
+    -------------------------
+    * mysqli::store_result -- mysqli_store_result — Transfère un jeu de résultats à partir de la dernière requête
+    * mysqli::store_result(int $mode = 0): mysqli_result|false
+    * Retourne un résultat stocké sous la forme d'un objet ou false si une erreur survient.
 
     ! La classe mysqli_stmt en PHP est utilisée pour représenter une requête préparée dans MySQL.
     ---------------------------------------------------------------------------------------------
