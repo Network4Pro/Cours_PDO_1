@@ -23,7 +23,7 @@ try {
     # ====================== #
     # 1 ) Ajouter donnée Avec Method Query.
     $sql = "INSERT INTO post(Nom,Prenom) values('Hamza','El-Khanchoufi')";
-    if($connexion->query($sql)) { echo "Ajouter Bien Sucess !!!<br><br>"; }
+    if($connexion->query($sql)) {  echo "Ajouter Bien Sucess !!!<br><br>"; }
 
     #-- Les requêtes MySQL préparées --# 
     #----------------------------------#
@@ -67,7 +67,8 @@ try {
 
     #2- Récuperer les données avec la méthode executer_query()
     $sql = "select * from post where NOM=?";
-    $result = $connexion->execute_query($sql,["Hamza"]); 
+    $result = $connexion->execute_query($sql,["Hamza"]);
+    
     
     #Fetch_All(Mode)
     print_r( $result->fetch_all(MYSQLI_ASSOC));
@@ -75,7 +76,7 @@ try {
     
     $sql = "select * from post";
     #fetch_assoc (associatif)
-    $result = $connexion->query($sql); 
+    $result = $connexion->query($sql);
     echo "\n----------- Fetch_assoc ---------\n";
     while($row = $result->fetch_assoc()){
         echo "Id : {$row['Id']} - Nom : {$row['Nom']} - Prenom :  {$row['Prenom']} \n ";
@@ -114,6 +115,29 @@ try {
         echo "ID : ". $row->Id ." - Nom : ".$row->Nom. " - Prenom : ".$row->Prenom. "\n";
     }
 
+    #4- Récuperer des données d'une Réquet préparée à l'aide la méthode get_result
+    $stm = $connexion->prepare("Select * from post");
+    $stm->execute();
+    $result = $stm->get_result();
+    echo " Nombre de champs  dans jeu de resultat est : ". $stm->field_count."\n";
+    echo " Nombre de Lignes dans jeu de resultat est : ". $stm->num_rows."\n";
+    print_r($result->fetch_all());
+
+    #3- Récuperer des données d'une Réquet préparée à l'aide la méthode fetch
+    $stm->execute();
+    $stm->bind_result($Id,$Nom,$Prenom);
+    while($row = $stm->fetch()){
+        echo "ID : ". $Id ." Nom :".$Nom . " prenom : ". $prenom."\n\n";
+    }
+
+    $result->free_result();
+    $stm->free_result();
+
+    $stm->execute();
+    $stm->store_result();
+    echo " Nombre de champs  dans jeu de resultat est : ". $stm->field_count."\n";
+    echo " Nombre de Lignes dans jeu de resultat est : ". $stm->num_rows."\n";
+
 
 
     # Les Autres Fonctions :
@@ -148,11 +172,24 @@ try {
 
     # Deplacer poiture vers colone 2.
     echo "\n\n---------- Fetch seek -----------\n\n";
-    $res->field_seek(2);
+    echo "Colone N° : ". $res->current_field."\n";
+    $res->field_seek(0);
     echo "Colone N° : ". $res->current_field."\n";
     print_r( $res->fetch_field() );
     echo "Colone N° : ". $res->current_field."\n";
-    var_dump( $res->fetch_field() );
+    print_r( $res->fetch_field() );
+
+
+    # 
+    $sql = "select * from post; select * from post where Id = ?";
+    $connexion->multi_query($sql);
+    do{
+        if($result = $connexion->store_result()){
+            while{
+                
+            }
+        }
+    }while();
 
     echo "</pre>";
 
@@ -178,31 +215,54 @@ try {
     echo "Errore : " . $ex->getMessage();
 }
 
-/**
- * Mysqli::select_db('DB')   : Sélectionne une base de données par défaut pour les requêtes. : bool (True / false).
- * Mysqli::query("Requet")   : Exécute une requête sur la base de données. [Select : un objet mysqli_result / les autres types de requêtes=true]
- * mysqli::execute_query("Array")     : Prepares, binds parameters, and executes SQL statement.
- * 
- * 
- * 
- * 
- * 
- * Mysqli_select_db(Mysqli,'DB')  : Sélectionne une base de données par défaut pour les requêtes. : bool (True / false).
- * Mysqli_query(Mysqli,"Requet") : Exécute une requête sur la base de données.  [Select : un objet mysqli_result / les autres types de requêtes=true]
- * mysqli_execute_query('mysqli','Requet') : Prepares, binds parameters, and executes SQL statement.
- * 
- * 
- * 
- * 
- * 
- * 
+/*
  
+   ? Class MYSQLI : Représente une connexion entre PHP et une base de données MySQL.
 
- La classe mysqli_stmt en PHP est utilisée pour représenter une requête préparée dans MySQL.
- ------------------------------------------------------------------------------------------
+    ! sélectionner une base de données spécifique
+    ---------------------------------------------
 
- 1) mysqli_stmt::bind_param ("Type" , Var ) - mysqli_stmt_bind_param : 
+     ? Mysqli::select_db('DB') - Mysqli_select_db(Mysqli,'DB') : 
+     ----------------------------------------------------------- 
+     *  sélectionner une base de données par défaut pour les requêtes.
+     *  'DB' est le nom de la base de données que vous souhaitez sélectionner
+     *  Elle retourne true en cas de succès ou false en cas d'échec.
 
+     ! Gestion des erreurs : 
+     -----------------------
+    * mysqli::$connect_errno : Retourne le code d'erreur du dernier appel de connexion, 0 aucune erreur n'est survenue.
+    * mysqli::$connect_error : Retourne  le message d'erreur  de la dernière erreur de connexion. null si aucune erreur ne survient.
+    * mysqli::$error : Retourne la chaîne décrivant l'erreur survenue lors du dernier appel à une fonction MySQLi. Une chaîne de caractères vide si aucune erreur n'est survenue.
+    * mysqli_errno   : Retourne le code erreur pour le dernier appel à une fonction MySQLi. 0 signifie qu'aucune erreur n'est survenue.
+
+
+     ! Exécuter des requêtes SQL :
+    -----------------------------
+
+     mysqli::query :
+     ------------
+     *  Exécute une requête sur la base de données.
+     *  mysqli::query(string $query) - mysqli_query(mysqli $mysql, string $query) :  ($result_mode = MYSQLI_STORE_RESULT).
+     *  Elle retourne false en cas d'échec de la requête.
+     *  Pour des requêtes réussies [ SELECT, SHOW, DESCRIBE ou EXPLAIN, mysqli_query() ] retournera un objet mysqli_result.
+     *  Pour les autres types de requêtes réussies (comme INSERT, UPDATE, DELETE), mysqli_query() retournera true.
+
+     musqli::execute_query : 
+     -----------------------
+     * La méthode mysqli::execute_query() est un raccourci pour ( prepare(), bind_param(), execute() et get_result() )
+     * Prépare la requête SQL, lie les paramètres et l'exécute.
+     * mysqli::execute_query(string $query, ?array $params = null): mysqli_result|bool
+     * Le modèle d'instruction peut contenir zéro ou plusieurs marqueurs de paramètres de point d'interrogation (?).
+     * Les valeurs des paramètres doivent être fournies sous forme de tableau à l'aide du paramètre params.
+     * Renvoie false en cas d'échec. Pour les requêtes ( SELECT ) renvoie un objet mysqli_result. les autres renvoie vrai.
+     * Nombre Lignes : $affected_​rows. ---  Nombre colone : $field_​count
+
+
+    ! La classe mysqli_stmt en PHP est utilisée pour représenter une requête préparée dans MySQL.
+    ---------------------------------------------------------------------------------------------
+
+   ? mysqli_stmt::bind_param ("Type" , Var ) :
+   -------------------------------------------
    * Elle permet de spécifier les valeurs qui remplaceront les marqueurs de substitution (?) dans la requête préparée.
    * La méthode prend deux arguments : 
         - Type   : ( i = int ) - ( d = float ) - ( s = string)
@@ -213,38 +273,50 @@ try {
 
    * Return : retourne true en cas de succès ou false si une erreur survient.
 
-    Prepare les Requets SQL: 
-    -------------------------
+    ? Prepare les Requets SQL: 
+    --------------------------
     * mysqli::prepare(query) ou mysqli_prepare(mysqli , query) :  Prépare une requête SQL pour l'exécution. mysqli|stm ou false.
     * La requête doit être composée d'une seule requête SQL.
     * Elle peut contenir des paramètres de marques (signe '?') à remplacer par des valeurs lors de l'exécution.
 
-    Exécuter la requete Préparer SQL:
-    ---------------------------------
+    ? Exécuter la requete Préparer SQL:
+    -----------------------------------
     * mysqli_stmt::execute(Array) ou mysqli_stmt_execute(mysqli_sqtm , Array) :  exécuter une requête préparée avec MySQLi en PHP.
     * Cette fonction retourne true en cas de succès ou false si une erreur survient.
     
+    ? get_result :
+    --------------
+    * Récupère un jeu de résultats d'une déclaration préparée sous la forme d'un objet mysqli_result.
+    * mysqli_stmt::get_result(): mysqli_result | false
+    * Cette méthode ne doit être appelée que pour les requêtes qui produisent un ensemble de résultats. (Select)
+    * Les données seront récupérées depuis le serveur MySQL vers PHP.
+    * false pour d'autres requêtes DML ou en cas d'échec. 
 
-    Exécuter des requêtes SQL :
-    ---------------------------
+    ? fetch : 
+    ---------
+    * Retourne le résultat d'une requête préparée dans une variable, liée par mysqli_stmt_bind_result().
+    * Notez que toutes les colonnes doivent être liées par l'application avant d'appeler mysqli_stmt_fetch().
+    * True : Réussite. Les données ont été lues. | False : Une erreur est survenue. | Null : Il n'y a plus de ligne à lire ou les données ont été tronquées.
+    
+    ? bind_result : 
+    ---------------
+    *  mysqli_stmt::bind_result(mixed &$var, mixed &...$vars): bool
+    * Lorsque mysqli_stmt_fetch() est appelée pour lire des valeurs, place les données dans les variables spécifiées var/vars.
+    * Cette fonction retourne true en cas de succès ou false si une erreur survient.
 
-     PDO::query :
-     ------------
-     *  Exécute une requête sur la base de données.
-     *  mysqli::query(string $query) - mysqli_query(mysqli $mysql, string $query) :  ($result_mode = MYSQLI_STORE_RESULT).
-     *  Elle retourne false en cas d'échec de la requête.
-     *  Pour des requêtes réussies [ SELECT, SHOW, DESCRIBE ou EXPLAIN, mysqli_query() ] retournera un objet mysqli_result.
-     *  Pour les autres types de requêtes réussies (comme INSERT, UPDATE, DELETE), mysqli_query() retournera true.
+
+
+
 
     mysqli_result : Représente le jeu de résultats obtenu depuis une requête.
     -------------------------------------------------------------------------
 
-    Les methods de Récuperer des données d'un jeu de résultats :
+    ! Les methods de Récuperer des données d'un jeu de résultats :
     ------------------------------------------------------------
 
     Fetch_All(Mode) : Récupère un tableau deux dimensionnel de toutes les lignes de résultats dans un tableau associatif, numérique, ou les deux
     
-    Fetch_array(Mode) 
+    ? Fetch_array(Mode) 
     ----------------- 
     * Récupère la ligne suivante d'un ensemble de résultats sous forme de tableau associatif, numérique ou les deux
     * Chaque appel ultérieur à cette fonction renverra la ligne suivante, ou null s'il n'y a plus de lignes.
@@ -252,7 +324,7 @@ try {
     * Retourne null s'il n'y a plus de lignes - Retourne false en cas d'erreur.
     * Mode : ( MYSQLI_ASSOC :  associatif )  ( MYSQLI_NUM :  numérique ) ( MYSQLI_BOTH : à la fois associatif et numérique ).
 
-    Fetch_assoc :
+    ? Fetch_assoc :
     -------------
     * Récupère la ligne suivante d'un ensemble de résultats sous forme de tableau associatif
     * Chaque appel ultérieur à cette fonction renverra la ligne suivante, ou null s'il n'y a plus de lignes.
@@ -260,33 +332,39 @@ try {
     * Renvoie null s'il n'y a plus de lignes dans le jeu de résultats.
     * Renvoie false en cas d'erreur.
 
-    fetch_column :
+    ? Fetch_column :
     --------------
     *  récupérer une colonne unique de la prochaine ligne d'un jeu de résultats (result set) provenant d'une requête MySQL.
     *  mysqli_result::fetch_column(int $column = 0) : null|int|float|string|false
     *  Les appels ultérieurs renvoient les valeurs de la colonne suivante dans le jeu de résultats, ou false s'il n'y a plus de lignes.
     *  La fonction définit les champs NULL à la valeur PHP null lors de la récupération de données.
     
-    fetch_row :
+    ? Fetch_row :
     -----------
     * Récupère une ligne de résultat sous forme de tableau indexé
     * Chaque nouvel appel retournera la prochaine ligne dans le jeu de résultats, ou null s'il n'y a plus de lignes.
     * Cette fonction définit les champs NULL à la valeur PHP null.
     * false si une erreur survient.
 
-    fetch_Object : 
+    ? Fetch_Object : 
+    * Retourne la ligne suivante d'un ensemble de résultats sous forme d'objet
+    * mysqli_result::fetch_object(string $class = "stdClass")
+    * chaque propriété représente le nom de la colonne du jeu de résultats. 
+    * Class : Le nom de la classe à instancier. Si non fourni, un objet stdClass sera retourné.
+    * Retourn : null s'il n'y a plus de lignes dans le jeu de résultats, ou false si une erreur survient.
 
-    Les autres Fonctions :
+    ! Les autres Fonctions :
     ----------------------
     * mysqli_result::$num_rows -- mysqli_num_rows : Retourne le nombre de lignes dans le jeu de résultats
     
 
     # Les methods de Récuperer les informations sur les conoles d'un jeu de résultats :
+   ------------------------------------------------------------------------------------
 
-    1) mysqli_result::$field_count - mysqli_num_fields : Récupère le nombre de champs dans l'ensemble de résultats
+    ? mysqli_result::$field_count - mysqli_num_fields : Récupère le nombre de champs dans l'ensemble de résultats
 
 
-    2) mysqli_result::$lengths : 
+    ? mysqli_result::$lengths : 
     ----------------------------
     * Retourne la longueur des colonnes de la ligne courante du jeu de résultats.
     * Un tableau d'entiers représentant la longueur de chaque colonne (sans inclure les caractères null de fin).
@@ -294,34 +372,47 @@ try {
     * Retourne False : Appelée avant les fonctions mysqli_fetch_row(), mysqli_fetch_array(), mysqli_fetch_object().
     * Retourne False : Appellée après avoir récupéré toutes les lignes du résultat.
 
-    3) fetch_fields  :
-    ------------------
+    ? mysqli_result::fetch_fields  :
+    --------------------------------
     * Récupère les informations sur toutes les colonnes du jeu de résultats.
     * Retourne un tableau d'objets mysqli_field représentant chaque colonne.
     * Propriétés de l'objet : name - table - lenght - type
 
-    4) fetch_field  :
-    -----------------
+    ? mysqli_result::fetch_field  :
+    -------------------------------
     * Récupère les informations sur la colonne suivante du jeu de résultats.
     * Retourne un objet mysqli_field représentant la colonne.
     * obtenir des informations sur chaque colonne du jeu de résultats dans une boucle.
     * false si aucune information n'est disponible pour ce champs.
     
-    5)  fetch_field_direct :
-    ------------------------
+    ?  fetch_field_direct :
+    -----------------------
     * mysqli_result::fetch_field_direct(int $index) : object | false
     * Retourne un objet qui contient les métadonnées d'un champ dans le jeu de résultats spécifié.
     * Le numéro du champ. Cette valeur doit être dans l'intervalle 0 à nombre de champs - 1.
 
-    6) current_field :
+    ? filed_seek :
+    --------------
+    * public mysqli_result::field_seek(int $index): bool
+    * déplace le pointeur de résultat (curseur) sur le champ spécifié dans un jeu de résultats MySQLi.
+    * Le prochain appel à la fonction mysqli_fetch_field() retournera la définition du champ de la colonne associée à cette position.
+    * Index : Le numéro du champ. Cette valeur doit être dans l'intervalle 0 à nombre de champs - 1.
+    * Retourne toujours true.
+
+    ? current_field :
     ------------------
     * Récupère la position courante d'un champ dans un pointeur de résultat
     * int $mysqli_result->current_field;
     * Retourne la position du curseur de champ utilisé par le dernier appel à la fonction mysqli_fetch_field().
     * Cette valeur peut être utilisée comme argument de la fonction mysqli_field_seek().
+     
+    ? Les autres Fonction du class mysqli_stmt : 
+    --------------------------------------------
+    * mysqli_stmt::$insert_id -- mysqli_stmt_insert_id : Récupère l'ID généré par la dernière requête INSERT
+    * mysqli_stmt::$affected_rows : Retourne le nombre total de lignes (Update, Insert, Delete ) par la dernière requête.
+    * mysqli_stmt::$num_rows      : Retourne le nombre de lignes extraites du serveur (Select).
     * 
 
 
-
- **/
+ */
 
