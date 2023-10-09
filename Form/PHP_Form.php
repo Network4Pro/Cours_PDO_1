@@ -111,6 +111,15 @@ Form:
     _parent  : Réponse est affichée dans le cadre parent
     ]
 
+    3) Enctype : 
+    * attribut spécifie comment les données du formulaire doivent être codées lors de leur soumission au serveur.
+    * attribut ne peut être utilisé que si method="post".
+    type :
+    ------ 
+    * 1) Application/x-www-form-urlencoded (Par default) : les espaces =>symboles "+" * les caractères spéciaux => en valeurs ASCII HEX.
+    * 2) Multipart/form-data  : Cette valeur est nécessaire si l'utilisateur télécharge un fichier via le formulaire. (Binaire)
+    * 3) Text/plain  : Envoie des données sans aucun encodage.
+
     - 3)  L' method  : Les valeurs get et post vont déterminer la méthode HTTP de transit des données du formulaire.
     * La méthode GET  : Données du formulaire annexées à l'URL action avec un séparateur ?.
     * La méthode POST : Données du formulaire envoyées comme corps de la requête.
@@ -227,6 +236,15 @@ Form:
             
 
  
+        ? Telecharger les fichiers sur le serveur : 
+        --------------------------------------------
+        1) Activie Telecharger les fichiers dans fichier PHP.ini : file_uploads = On.
+        2) Le formulaire utilise method="POST".
+        3) avec attribut : enctype="multipart/form-data".
+        4) move_uploaded_file : Pour copier fichier dans dossier upload par dossier xampp/tmp/fichier.
+        5) $_File["Upload"]["tmp"] afficher nom fichier.
+
+
         */
 
 ?>
