@@ -250,8 +250,8 @@
 * r+ : Ouverture en lecture et écriture, le pointeur sera au début
 * w+ : Ouverture en rw, crée le fichier ou le vide avant écriture, pointeur au début
 * a+ : Ouverture en lecture et écriture, crée le fichier si n'existe pas, pointeur à la fin (écrit à la suite du fichier)
-* x  : 
-* x+ : 
+* x  : Ouverture en écriture seule, creer fichier, pointeur à la début, Si le fichier existe déjà, retournant false. 
+* x+ : Ouverture en lecture et écriture, creer fichier, pointeur à la début, Si le fichier existe déjà, retournant false. 
 * NB : le fait de faire suivre le mode par la lettre b entre crochets indique que le fichier est traité de façon binaire.
 
 ? Resumer :
