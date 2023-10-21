@@ -68,8 +68,9 @@
     echo date_format($d,"Y-m-d H:i:s u e P Z") . "<br>"; # e => fuseau horaire  ,  P => Différence avec l'heure Greenwich (GMT) 
 
 
-    echo "<br> ------------- Part 3 date et Time fonction ---------- <br>";
+    echo "<br><br>------------- Part 3 date et Time fonction ----------<br><br>";
 
+    echo "<br><br>------------ Date_Add ------------<br><br>";
     date_default_timezone_set("Africa/Casablanca");
     $d = date_create();
     date_add($d,date_interval_create_from_date_string("2 months"));
@@ -82,7 +83,7 @@
 
     $i  = date_interval_create_from_date_string("3 years 2 months 1 day 6 hours 30 minutes 45 seconds");
     echo "Date Format : 3 years 2 months 1 day 1 hour 30 minutes 45 seconds";
-    echo "<br>=========================================================<br>";
+    echo "<br><br>=========================================================<br><br>";
     echo "Nombre years    : " . $i->y . "<br>"; # years
     echo "Nombre month    : " . $i->m . "<br>"; # month
     echo "Nombre days     : " . $i->d . "<br>"; # days
@@ -90,14 +91,67 @@
     echo "Nombre minutes  : " . $i->i . "<br>"; # minutes
     echo "Nombre secondes : " . $i->s . "<br>"; # secondes
 
-  
-
     /* 
-    ? DateInterval : Représente un intervalle de dates.
-    * propriétés :
-
-
-    */
+        ? DateInterval : Représente un intervalle de dates
+        ? ------------------------------------------------
+        * propriétés : $y - $
     
+        Les Methods : 
+        -------------
+        ? Date_interval_create_from_date_string : 
+        ? ---------------------------------------
+        * Configure un objet DateInterval à partir des parties d'une chaîne
+        * date_interval_create_from_date_string(string $datetime): DateInterval|false
+        * years - months - day - hours - munites - seconds 
+    
+    */
+
+        echo "<br><br>------------ Date_Sub ------------<br><br>";
+        date_default_timezone_set("Africa/Casablanca");
+        $date = date_create();
+        echo date_format($date,"Y/m/d H-i-s a") . "<br>";
+        date_sub($date,date_interval_create_from_date_string("1 year 2 months 5 days"));
+        echo date_format($date,"Y/m/d H-i-s a") . "<br>";
+
+   
+    /* 
+
+        ? Date_create :
+        ? -------------
+        * Création d'un objet DateTime
+        * Date_create(string $datetime = "now", ?DateTimeZone $timezone = null): DateTime|false
+        * Renvoie une nouvelle instance DateTime.
+
+        ? DateTime::sub :
+        ? ---------------
+        * Soustrait une durée à un objet DateTime. 
+        * Date_sub(DateTime $Object , DateInterval $Interval) : DateTime 
+        * Modifier l'objet DateTime spécifié, en soustrayant l'objet DateInterval spécifié.
+        * 
+
+        ? DateTime::Add :
+        ? --------------
+        * Modifie un objet un objet DateTime. 
+        * Date_add(DateTime $object, DateInterval $interval): DateTime.
+        * Ajoute la durée de l'objet DateInterval à l'objet DateTime.
+        * Retourne l'objet modifié DateTime pour chainer les méthodes. 
+    
+        ? DateTime::modify :
+        ? ------------------
+        * Modifie un objet un objet DateTime. 
+        * Date_modify(DateTime $object, string $modifier): DateTime|false.
+        * Ajoute la durée de l'objet DateInterval à l'objet DateTime.
+        * Retourne l'objet modifié DateTime pour chainer les méthodes ou false si une erreur survient.
+
+        */
+
+
+
+    echo "<br><br>------------ Date_Modify ------------<br><br>";
+    date_modify($date,"+1 year");
+    echo date_format($date,"Y/m/d H-i-s a") . "<br>";
+
+
+
 ?>
 
