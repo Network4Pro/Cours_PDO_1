@@ -78,15 +78,19 @@
     date_add($d,date_interval_create_from_date_string("1 year 2 months 3 days"));
     echo date_format($d,"d-m-Y H:i:s e");
 
-    echo "<br>---------------- ---------------------<br>";
+    echo "<br><br>-------------------------------------<br><br>";
 
-    $i  = new DateInterval("3 years 2 months 1 day 1 hour 30 minutes 45 seconds");
-    echo "Nombre est : " . $i->d . "\n"; # days
-    echo "Nombre est : " . $i->y . "\n"; # years
-    echo "Nombre est : " . $i->m . "\n"; # month
-    echo "Nombre est : " . $i->h . "\n"; # heurs
-    echo "Nombre est : " . $i->i . "\n"; # minutes
-    echo "Nombre est : " . $i->s . "\n"; # secondes
+    $i  = date_interval_create_from_date_string("3 years 2 months 1 day 6 hours 30 minutes 45 seconds");
+    echo "Date Format : 3 years 2 months 1 day 1 hour 30 minutes 45 seconds";
+    echo "<br>=========================================================<br>";
+    echo "Nombre years    : " . $i->y . "<br>"; # years
+    echo "Nombre month    : " . $i->m . "<br>"; # month
+    echo "Nombre days     : " . $i->d . "<br>"; # days
+    echo "Nombre heurs    : " . $i->h . "<br>"; # heurs
+    echo "Nombre minutes  : " . $i->i . "<br>"; # minutes
+    echo "Nombre secondes : " . $i->s . "<br>"; # secondes
+
+    
 
     
 ?>
