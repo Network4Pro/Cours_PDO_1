@@ -90,7 +90,14 @@
     echo "Nombre minutes  : " . $i->i . "<br>"; # minutes
     echo "Nombre secondes : " . $i->s . "<br>"; # secondes
 
-    
+  
 
+    /* 
+    ? DateInterval : Représente un intervalle de dates.
+    * propriétés :
+
+
+    */
     
 ?>
+
