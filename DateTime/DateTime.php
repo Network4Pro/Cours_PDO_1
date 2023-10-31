@@ -97,9 +97,13 @@
 
     echo time() . "<br>";
 
-    
+
     echo "<pre>";
     print_r (getdate());
+    echo "</pre>";
+
+    echo "<pre>";
+    print_r ( date_parse("1995-02-31 5:25:20 UTTC"));
     echo "</pre>";
     
     
@@ -155,6 +159,30 @@
         * Ajoute la durée de l'objet DateInterval à l'objet DateTime.
         * Retourne l'objet modifié DateTime pour chainer les méthodes ou false si une erreur survient.
 
+
+        ? time() :
+        ? ------- 
+        * Retourne l'horodatage UNIX actuel
+        * Retourne l'heure courante, mesurée en secondes depuis le début de l'époque UNIX 1970.
+        
+
+        ? getdate() :
+        ? -------------
+        * getdate(?int $timestamp = null): array
+        * Retourne un array associatif contenant les informations de date et d'heure du timestamp
+        * la date/heure courante locale si timestamp est omis ou null.
+
+
+        ? date_parse() :
+        ? --------------
+        * analyse la chaîne datetime donnée selon les mêmes règles strtotime() et DateTimeImmutable::__construct().
+        * Retourne un tableau associatif avec des informations détaillées sur une date/moment donnée
+        * date_parse(string $datetime): array
+
+
+
+
+
         */
 
 
@@ -164,6 +192,23 @@
     echo date_format($date,"Y/m/d H-i-s a") . "<br>";
 
 
+    echo "<br><br>------------ Date Diff ------------<br><br>";
+    $reg1 = date_create("2022-01-09");
+    $reg2 = date_create("now");
+
+    $diff = date_diff($reg1,$reg2);
+    
+    echo "<pre>";
+    print_r($diff);
+    echo "</pre>";
+
+    echo "Jour est :" . $diff->days . "\n";
+
+
+    echo "<br><br>------------ Date strtotime ------------<br><br>";
+    echo date("Y-m-d H:i:s", strtotime("next friday")) . "<br>";
+    echo date("Y-m-d H:i:s", strtotime("+1 year")) . "<br>";
+    echo date("Y-m-d H:i:s", strtotime("tomorrow")) . "<br>";
 
 ?>
 
