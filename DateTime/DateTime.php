@@ -91,6 +91,17 @@
     echo "Nombre minutes  : " . $i->i . "<br>"; # minutes
     echo "Nombre secondes : " . $i->s . "<br>"; # secondes
 
+    echo "<br><br>-------------  Get date / Date_Parse---------------<br><br>";
+
+    date_default_timezone_set("Africa/Casablanca");
+
+    echo time() . "<br>";
+
+    echo "<pre>";
+    print_r (getdate());
+    echo "</pre>";
+    
+    
     /* 
         ? DateInterval : Représente un intervalle de dates
         ? ------------------------------------------------
