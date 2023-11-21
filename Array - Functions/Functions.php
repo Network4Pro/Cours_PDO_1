@@ -96,11 +96,7 @@
     print_r(array_pad($tab,3,"@"));
 
 
-    echo "<br>";
-    # Dépile un élément de la fin d'un tableau
-    # Retourne la valeur du dernier élément du tableau array : mixed
-    $tab = ["Hamza","Jadore","Ilyas"];
-    print_r( array_pop($tab) );
+
 
 
     echo "<br>";
@@ -191,6 +187,54 @@
     $array = array( 10 => "red"   , 20 => "Jadore");
     $remplace = array( 30 => "Bleu"  , 20 => "Blanc" );
     print_r( array_replace($array,$remplace));
+    
+
+    echo "<br>";
+    # Sélectionne une ou plusieurs valeurs au hasard dans un tableau et retourne la ou les clés de ces valeurs.
+    # array_rand(array $array, int $num = 1): int|string|array
+    # Spécifie le nombre d'entrées que vous voulez récupérer.
+    $array = ["red","grenn","blue","yellow","brown"];
+    $random_key = array_rand($array,3);
+    print_r( $random_key );
+    // echo $a[$random_key[0]]."<br>";
+    // echo $a[$random_key[1]]."<br>";
+    // echo $a[$random_key[2]]."<br>";
+
+    $array_test = [ "Ahmed" => "A" , "Jadore" => "B" , "Ilyass" => "C"  ];
+    print_r(array_rand($array_test,3));
+
+
+
+    echo "<br>======== Array_shift   ============  <br>";
+
+    # Extrait la première valeur du tableau array et la retourne, en raccourcissant array d'un élément, et en déplaçant tous les éléments vers le bas. 
+    # Toutes les clés numériques seront modifiées pour commencer à zéro pendant que les clés litérales ne seront pas affectées.
+    # Retourne la valeur dépilée, ou null si le tableau est vide ou si la valeur d'entrée n'est pas un tableau.
+    # Cette fonction remet le pointeur au début du tableau d'entrée (équivalent de reset()).
+    $array = ["Ahmed","Anwar","Jadore","Ilyass"];
+    print_r($array);
+    echo "Current : ". current($array) . "<br>";
+    echo "End : " . end($array) . "<br>";
+    echo "Current : " . current($array) . "<br>";
+    $ar1 = array_shift($array);
+    echo "Cuurent : " . current($array) . "<br>";
+    print_r($array);
+
+    echo "<br>";
+    echo "<br>========  Array_Pop  ============  <br>";
+    echo "<br>";
+    # Dépile un élément de la fin d'un tableau
+    # Retourne la valeur du dernier élément du tableau array : mixed
+    $tab = ["Hamza","Jadore","Ilyas"];
+    print_r( array_pop($tab) );
+
+
+    echo "<br>";
+    # 
+    # 
+    # 
+    $array = ["Anwar","Youssef","Hamza"];
+    print_r($array);
 
 
     echo "</pre>";
